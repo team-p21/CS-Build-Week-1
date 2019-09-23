@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
+import django_heroku
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 import os
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +29,9 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = []
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Application definition
