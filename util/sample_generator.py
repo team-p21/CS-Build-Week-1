@@ -37,8 +37,8 @@ class Room:
             'name': self.name,
             'description': self.description,
             'room_direction': self.room_d,
-            'cords x': self.x,
-            'cords y': self.y
+            'cords_x': self.x,
+            'cords_y': self.y
             }
         
         room_json2 = json.dumps(room_json)
