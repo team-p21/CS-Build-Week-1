@@ -45,3 +45,10 @@ for p in players:
   p.currentRoom=r_outside.id
   p.save()
 
+# import list of rooms
+# update models for new room info
+# purge/redo database
+# remigrate everything
+# for loop to save rooms
+# for loop to connect rooms based on direction or turn
+# set player to first room id
