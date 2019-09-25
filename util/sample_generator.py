@@ -1,3 +1,7 @@
+#from django.contrib.auth.models import User as ModelUser
+#from adventure.models import Player as PlayerModel, Room as RoomModel
+import json
+
 # Sample Python code that can be used to generate rooms in
 # a zig-zag pattern.
 #
@@ -12,9 +16,6 @@
 # n -> w
 # w -> n
 # n -> e
-
-
-import json
 
 class Room:
     def __init__(self, id, name, description, x, y, room_d):
@@ -36,7 +37,8 @@ class Room:
             'name': self.name,
             'description': self.description,
             'room_direction': self.room_d,
-            'cords': (self.x, self.y),
+            'cords x': self.x,
+            'cords y': self.y
             }
         
         room_json2 = json.dumps(room_json)
@@ -108,17 +110,21 @@ class World:
             room = Room(room_count, "A Generic Room", "This is a generic room.", x, y, room_direction)
             if previous_room is None:
                 room1 = Room(room_count, "Track", "stra", x, y, room_direction)
+                
             if room.room_d is "n":
                 if previous_room.room_d is "e":
                     self.listOfRooms[len(self.listOfRooms)-1].description = "left-turn"
                     room1 = Room(room_count, "Track", "left-turn", x, y, room_direction)
+                    
                     self.listOfRooms.append(room1)
                 else:
                     self.listOfRooms[len(self.listOfRooms)-1].description = "right-turn"
                     room1 = Room(room_count, "Track", "right-turn", x, y, room_direction)
+                    
                     self.listOfRooms.append(room1)
             else:
                 room1 = Room(room_count, "Track", "stra", x, y, room_direction)
+                
                 self.listOfRooms.append(room1)
             # Note that in Django, you'll need to save the room after you create it
 
@@ -128,8 +134,10 @@ class World:
             
             # Connect the new room to the previous room
             if previous_room is not None:
+                ## from sample_generator
                 previous_room.connect_rooms(room, room_direction)
-
+                ## from model
+              
             # Update iteration variables
             previous_room = room
             room_count += 1
@@ -197,7 +205,8 @@ num_rooms = 100
 width = 10
 height = 10
 w.generate_rooms(width, height, num_rooms)
-#w.print_rooms()
+
+
 
 
 
