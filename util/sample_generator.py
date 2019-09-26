@@ -38,7 +38,7 @@ class Room:
             'description': self.description,
             'room_direction': self.room_d,
             'cords_x': self.x,
-            'cords_y': self.y
+            'cords_y': self.y,
             }
         
         room_json2 = json.dumps(room_json)
@@ -116,13 +116,18 @@ class World:
                     self.listOfRooms[len(self.listOfRooms)-1].description = "left-turn"
                     room1 = Room(room_count, "Track", "left-turn", x, y, room_direction)
                     
+                        ## from model
                     self.listOfRooms.append(room1)
                 else:
                     self.listOfRooms[len(self.listOfRooms)-1].description = "right-turn"
+                    
                     room1 = Room(room_count, "Track", "right-turn", x, y, room_direction)
                     
+                        ## from model
                     self.listOfRooms.append(room1)
             else:
+                
+                ## from model
                 room1 = Room(room_count, "Track", "stra", x, y, room_direction)
                 
                 self.listOfRooms.append(room1)
