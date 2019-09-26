@@ -18,9 +18,9 @@ import json
 # n -> e
 
 class Room:
-    def __init__(self, id, name, description, x, y, room_d):
+    def __init__(self, id, title, description, x, y, room_d):
         self.id = id
-        self.name = name
+        self.title = title
         self.description = description
         self.n_to = None
         self.s_to = None
@@ -30,16 +30,24 @@ class Room:
         self.y = y
         self.room_d = room_d
     def __repr__(self):
-        if self.e_to is not None:
-            return f"{self.room_d} ({self.x}, {self.y}) -> ({self.e_to.x}, {self.e_to.y})"
+        #if self.e_to is not None:
+         #   return f"{self.room_d} ({self.x}, {self.y}) -> ({self.e_to.x}, {self.e_to.y})"
         room_json = {
+            "model": "adventure.Room",
+            "pk": self.id,
+            "fields": {
             'id': self.id,
-            'name': self.name,
+            'title': self.title,
             'description': self.description,
-            'room_direction': self.room_d,
-            'cords_x': self.x,
-            'cords_y': self.y,
+            'n_to': self.n_to,
+            's_to': self.s_to,
+            'e_to': self.e_to,
+            'w_to': self.w_to,
+            'room_d': self.room_d,
+            'x': self.x,
+            'y': self.y,
             }
+        }
         
         room_json2 = json.dumps(room_json)
         #print(room_json2)
@@ -110,27 +118,54 @@ class World:
             room = Room(room_count, "A Generic Room", "This is a generic room.", x, y, room_direction)
             if previous_room is None:
                 room1 = Room(room_count, "Track", "stra", x, y, room_direction)
-                
+            # connect and append rooms to json list    
             if room.room_d is "n":
                 if previous_room.room_d is "e":
+                    #bottom number on right side of grid
                     self.listOfRooms[len(self.listOfRooms)-1].description = "left-turn"
+                    self.listOfRooms[len(self.listOfRooms)-1].w_to = previous_room.id-1
+                    self.listOfRooms[len(self.listOfRooms)-1].n_to = previous_room.id+1
+                    self.listOfRooms[len(self.listOfRooms)-1].e_to = None
+                    #top number on right side of grid
                     room1 = Room(room_count, "Track", "left-turn", x, y, room_direction)
-                    
+                    room1.s_to = previous_room.id
+                    room1.w_to = room1.id+1
                         ## from model
                     self.listOfRooms.append(room1)
                 else:
+                    #bottom number on left side of grid
                     self.listOfRooms[len(self.listOfRooms)-1].description = "right-turn"
-                    
+                    self.listOfRooms[len(self.listOfRooms)-1].e_to = previous_room.id-1
+                    self.listOfRooms[len(self.listOfRooms)-1].n_to = previous_room.id+1
+                    self.listOfRooms[len(self.listOfRooms)-1].w_to = None
+                    # top number on left side of grid
                     room1 = Room(room_count, "Track", "right-turn", x, y, room_direction)
-                    
+                    room1.s_to = previous_room.id
+                    room1.e_to = room1.id+1
                         ## from model
                     self.listOfRooms.append(room1)
             else:
-                
                 ## from model
-                room1 = Room(room_count, "Track", "stra", x, y, room_direction)
                 
-                self.listOfRooms.append(room1)
+                if room_direction is "e":
+                    room1 = Room(room_count, "Track", "straight", x, y, room_direction)
+                    if room1.id-1 == -1:
+                        room1.id = 0
+                        room1.e_to = room1.id+1
+                    else:
+                        room1.w_to = room1.id-1
+                        room1.e_to = room1.id+1
+                    self.listOfRooms.append(room1)
+                else:
+                    room1 = Room(room_count, "Track", "straight", x, y, room_direction)
+                    if room1.id+1 == 100:
+                        room1.id = 99
+                        room1.e_to = room1.id-1
+                    else: 
+                        room1.w_to = room1.id+1
+                        room1.e_to = room1.id-1
+                    self.listOfRooms.append(room1)
+
             # Note that in Django, you'll need to save the room after you create it
 
             # Save the room in the World grid
@@ -209,11 +244,14 @@ w = World()
 num_rooms = 100
 width = 10
 height = 10
-w.generate_rooms(width, height, num_rooms)
+data = w.generate_rooms(width, height, num_rooms)
+#w.print_rooms()
+print(w.generate_rooms(width, height, num_rooms))
 
 
 
-
+#with open('testfile.json', 'w', encoding='utf-8') as outfile:
+ # json.dump(data, outfile, ensure_ascii=False, indent=4)
 
 
 #print(f"\n\nWorld\n  height: {height}\n  width: {width},\n  num_rooms: {num_rooms}\n")
